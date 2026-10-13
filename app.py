@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import mysql.connector
-
+# Version 1: Demonstrating Git version control for HMS
 app = Flask(__name__)
 
 db = mysql.connector.connect(
