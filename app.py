@@ -1,3 +1,4 @@
+# Version 1: Initial HMS implementation
 from flask import Flask, render_template, request, redirect
 import mysql.connector
 
