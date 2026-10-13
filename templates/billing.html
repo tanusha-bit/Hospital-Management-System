@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-info: #0ea5e9;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 2rem 0;
+            background: linear-gradient(135deg, #7dd3fc, #0ea5e9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .form-section, .list-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        button.action-btn {
+            background: var(--accent-info);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        button.action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .bill-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-info);
+        }
+
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .bill-amount {
+            color: var(--accent-info);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="/patient" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Patient Portal</a>
+    
+    <div class="header">
+        <h1>Billing Management</h1>
+    </div>
+
+    <div class="container">
+        <div class="form-section">
+            <h3>Generate Invoice</h3>
+            <form action="/add_bill" method="POST">
+                <div class="form-group">
+                    <label>Patient ID</label>
+                    <input type="number" name="patient_id" required>
+                </div>
+                <div class="form-group">
+                    <label>Treatment Name</label>
+                    <input type="text" name="treatment" required>
+                </div>
+                <div class="form-group">
+                    <label>Room Charges (₹)</label>
+                    <input type="number" name="room_charges" step="0.01" required>
+                </div>
+                <button type="submit" class="action-btn">Generate Bill</button>
+            </form>
+        </div>
+
+        <div class="list-section">
+            <h3>Recent Invoices</h3>
+            <form action="/billing" method="POST" style="margin-bottom: 2rem;">
+                <div class="form-group" style="display:flex; gap:1rem;">
+                    <input type="number" name="patient_id" placeholder="Enter Patient ID to View Bills" required style="flex:1;">
+                    <button type="submit" class="action-btn" style="margin-top:0; width:auto;">Search</button>
+                </div>
+            </form>
+
+            {% if check_id %}
+            <h4 style="margin-top: -1rem;">Showing bills for Patient ID: {{ check_id }}</h4>
+            <a href="/billing" style="color:var(--text-muted); font-size:0.9rem; display: inline-block; margin-bottom: 1rem;">View All Invoices</a>
+            {% endif %}
+            {% for b in bills %}
+            <div class="bill-card">
+                <div class="bill-header">
+                    <strong>Bill No: #{{ b[0] }}</strong>
+                    <span>Patient ID: {{ b[1] }}</span>
+                </div>
+                <div><strong>Treatment:</strong> {{ b[2] }}</div>
+                <div style="text-align: right; margin-top: 1rem;">
+                    <div class="bill-amount">₹{{ b[3] }}</div>
+                    <small style="color: var(--text-muted);">Room Charges</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

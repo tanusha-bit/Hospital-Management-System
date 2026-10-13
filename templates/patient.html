@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-tertiary: #10b981;
+            --accent-info: #0ea5e9;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #34d399, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .billing-btn {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--accent-info);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .billing-btn:hover {
+            background: rgba(14, 165, 233, 0.4);
+        }
+
+        .container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .list-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .status-pending { border-left-color: var(--accent-info) !important; }
+        .status-accepted { border-left-color: var(--accent-tertiary) !important; }
+        .status-denied { border-left-color: #ef4444 !important; }
+        .status-attended { border-left-color: #a855f7 !important; }
+        
+        span.status-pending { color: var(--accent-info) !important; font-weight:800; }
+        span.status-accepted { color: var(--accent-tertiary) !important; font-weight:800; }
+        span.status-denied { color: #ef4444 !important; font-weight:800; }
+        span.status-attended { color: #a855f7 !important; font-weight:800; }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        button.action-btn {
+            background: var(--accent-tertiary);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        button.action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .patient-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-tertiary);
+        }
+
+        .patient-card strong {
+            color: var(--accent-tertiary);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    
+    <div class="header">
+        <h1>Patient Portal</h1>
+        <a href="/billing" class="billing-btn"><i class="fa-solid fa-file-invoice"></i> Generate & View Bills</a>
+    </div>
+
+    <div class="container">
+        <!-- Add Patient Form -->
+        <div class="form-section">
+            <h3>Admit New Patient</h3>
+            <form action="/add_patient" method="POST">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Must be a @gmail.com address" required>
+                </div>
+                <button type="submit" class="action-btn">Register Patient</button>
+            </form>
+        </div>
+
+        <div class="list-section">
+            <h3>Registered Patients</h3>
+            <div style="max-height: 350px; overflow-y: auto; padding-right: 1rem;">
+                {% for p in patients %}
+                <div class="patient-card">
+                    <strong>ID:</strong> {{ p[0] }} <br>
+                    <strong>Name:</strong> {{ p[1] }} <br>
+                    <strong>DOB:</strong> {{ p[2] }} | <strong>Email:</strong> {{ p[3] }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW APPOINTMENT SECTIONS -->
+    <div class="header" style="margin-top: 4rem;">
+        <h1>Appointments</h1>
+    </div>
+
+    <div class="container">
+        <!-- Book Appointment Form -->
+        <div class="form-section">
+            <h3>Book an Appointment</h3>
+            <form action="/add_appointment" method="POST">
+                <div class="form-group">
+                    <label>Your Patient ID</label>
+                    <input type="number" name="patient_id" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Appointment</label>
+                    <input type="text" name="reason" placeholder="e.g. Routine checkup, flu symptoms..." required>
+                </div>
+                <div class="form-group">
+                    <label>Requested Time</label>
+                    <input type="time" name="time" required>
+                </div>
+                <button type="submit" class="action-btn" style="background: var(--accent-info);">Request Appointment</button>
+            </form>
+        </div>
+
+        <!-- Check Appointments Form -->
+        <div class="list-section">
+            <h3>Check My Appointment Status</h3>
+            <form action="/patient_appointments" method="POST" style="margin-bottom: 2rem;">
+                <div class="form-group" style="display:flex; gap:1rem;">
+                    <input type="number" name="patient_id" placeholder="Enter Patient ID to Search" required style="flex:1;">
+                    <button type="submit" class="action-btn" style="margin-top:0; width:auto;">Check</button>
+                </div>
+            </form>
+
+            {% if my_appointments is not none %}
+                <h4>Results for Patient ID: {{ check_id }}</h4>
+                {% if my_appointments|length == 0 %}
+                    <p style="color: var(--text-muted);">No appointments found.</p>
+                {% else %}
+                    {% for a in my_appointments %}
+                    {% set stat_class = 'status-pending' %}
+                    {% if a|length > 4 %}
+                        {% if a[4] == 'Accepted' %} {% set stat_class = 'status-accepted' %}
+                        {% elif a[4] == 'Denied' %} {% set stat_class = 'status-denied' %}
+                        {% elif a[4] == 'Attended' %} {% set stat_class = 'status-attended' %}
+                        {% endif %}
+                    {% endif %}
+                    
+                    <div class="patient-card {{ stat_class }}">
+                        <strong>Appt ID:</strong> {{ a[0] }} <br>
+                        <strong>Reason:</strong> {{ a[5] if a|length > 5 else 'N/A' }} <br>
+                        <strong>Doctor ID:</strong> {{ a[2] if a[2] else 'Not Yet Assigned' }} <br>
+                        <strong>Time:</strong> {{ a[3] }} <br>
+                        <strong>Status:</strong> 
+                        <span class="status-text {{ stat_class }}">
+                            {{ a[4] if a|length > 4 else 'Pending' }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
