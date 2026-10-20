@@ -2,6 +2,8 @@ import hmac
 import os
 
 from flask import Flask, abort, flash, render_template, request, redirect, session
+# Version 1: Initial HMS implementation
+from flask import Flask, render_template, request, redirect
 import mysql.connector
 from werkzeug.security import check_password_hash, generate_password_hash
 
