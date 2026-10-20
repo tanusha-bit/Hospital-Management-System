@@ -29,7 +29,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         .glow {
@@ -126,6 +126,8 @@
         .patient .card-icon { color: var(--accent-tertiary); text-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
         .operator .card-icon { color: var(--accent-primary); text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
         .doctor .card-icon { color: var(--accent-secondary); text-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+        .pharmacist .card-icon { color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+        .nurse .card-icon { color: #38bdf8; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
 
         .card-title {
             font-size: 1.8rem;
@@ -158,6 +160,8 @@
         .card.patient::after { background: var(--accent-tertiary); opacity: 0.5; }
         .card.operator::after { background: var(--accent-primary); opacity: 0.5; }
         .card.doctor::after { background: var(--accent-secondary); opacity: 0.5; }
+        .card.pharmacist::after { background: #fbbf24; opacity: 0.5; }
+        .card.nurse::after { background: #38bdf8; opacity: 0.5; }
 
         .card:hover::after {
             height: 100%;
@@ -168,33 +172,37 @@
 <body>
     <div class="glow"></div>
     <div class="header">
-        <h1>Lifeline Hospital Hub</h1>
-        <p>Select your portal to proceed</p>
+        <h1>Lifeline Hospital Admin</h1>
+        <p>Choose your stakeholder login</p>
     </div>
 
     <div class="dashboard-container">
-        <a href="/patient" class="card patient">
-            <div class="card-icon">
-                <i class="fa-solid fa-bed-pulse"></i>
-            </div>
+        <a href="/login/patient" class="card patient">
+            <div class="card-icon"><i class="fa-solid fa-bed-pulse"></i></div>
             <h2 class="card-title">Patient</h2>
-            <div class="card-subtitle">Manage patient records, admission & details</div>
+            <div class="card-subtitle">View your appointments and invoices</div>
         </a>
-
-        <a href="/operator" class="card operator">
+        <a href="/login/doctor" class="card doctor">
+            <div class="card-icon"><i class="fa-solid fa-user-doctor"></i></div>
+            <h2 class="card-title">Doctor</h2>
+            <div class="card-subtitle">Sign in to your doctor dashboard</div>
+        </a>
+        <a href="/login/nurse" class="card nurse">
+            <div class="card-icon"><i class="fa-solid fa-briefcase-medical"></i></div>
+            <h2 class="card-title">Nurse</h2>
+            <div class="card-subtitle">Sign in to your nurse dashboard</div>
+        </a>
+        <a href="/login/pharmacist" class="card pharmacist">
+            <div class="card-icon"><i class="fa-solid fa-pills"></i></div>
+            <h2 class="card-title">Pharmacist</h2>
+            <div class="card-subtitle">Sign in to manage pharmacy inventory</div>
+        </a>
+        <a href="/admin_login" class="card operator">
             <div class="card-icon">
                 <i class="fa-solid fa-desktop"></i>
             </div>
-            <h2 class="card-title">Operator</h2>
-            <div class="card-subtitle">Handle appointments, billing & front-desk</div>
-        </a>
-
-        <a href="/doctor" class="card doctor">
-            <div class="card-icon">
-                <i class="fa-solid fa-user-doctor"></i>
-            </div>
-            <h2 class="card-title">Doctor</h2>
-            <div class="card-subtitle">View staff profiles, specializations & info</div>
+            <h2 class="card-title">Admin / Operator</h2>
+            <div class="card-subtitle">Manage all records, accounts, and appointments</div>
         </a>
     </div>
 </body>

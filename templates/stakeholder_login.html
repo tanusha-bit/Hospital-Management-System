@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ role }} Login - Hospital Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { color-scheme: dark; font-family: 'Outfit', sans-serif; background: #0f172a; color: #f8fafc; }
+        body { min-height: 100vh; margin: 0; display: grid; place-items: center; }
+        main { width: min(90vw, 380px); padding: 2rem; border: 1px solid rgba(255,255,255,.12); border-radius: 20px; background: rgba(30,41,59,.85); box-sizing: border-box; }
+        h1 { margin-top: 0; }
+        label, input, button { display: block; width: 100%; box-sizing: border-box; }
+        label { margin-top: 1rem; }
+        input, button { margin-top: .4rem; padding: .8rem; border: 1px solid #475569; border-radius: 8px; font: inherit; }
+        button { margin-top: 1.5rem; border: 0; background: #3b82f6; color: white; cursor: pointer; }
+        .error { color: #fca5a5; }
+        .success { color: #86efac; }
+        a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>{{ role }} Login</h1>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <p class="{{ category }}">{{ message }}</p>
+        {% endfor %}
+        <form method="POST">
+            <label for="username">Username</label>
+            <input id="username" name="username" autocomplete="username" required>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+            <button type="submit">Sign in</button>
+        </form>
+        <p>New here? <a href="/register/{{ role|lower }}">Create a {{ role|lower }} account</a></p>
+        <p><a href="/">Back to stakeholder selection</a></p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { color-scheme: dark; font-family: 'Outfit', sans-serif; background: #0f172a; color: #f8fafc; }
+        body { margin: 0; padding: 2rem; }
+        main { max-width: 900px; margin: auto; }
+        section { margin: 1.5rem 0; padding: 1.5rem; background: #1e293b; border: 1px solid #475569; border-radius: 12px; }
+        form { display: flex; gap: .75rem; flex-wrap: wrap; }
+        input, button { padding: .75rem; border: 1px solid #475569; border-radius: 7px; font: inherit; }
+        input { background: #0f172a; color: #f8fafc; }
+        button { background: #10b981; color: #052e2b; cursor: pointer; }
+        li { margin: .75rem 0; }
+        a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+<main>
+    <form action="/logout" method="POST" style="justify-content:flex-end">
+        <button type="submit">Sign out</button>
+    </form>
+    <h1>Welcome, {{ patient[1] }}</h1>
+    <section>
+        <h2>Your details</h2>
+        <p><strong>Patient ID:</strong> {{ patient[0] }}</p>
+        <p><strong>Date of birth:</strong> {{ patient[2] }}</p>
+        <p><strong>Email:</strong> {{ patient[3] }}</p>
+    </section>
+    <section>
+        <h2>Request an appointment</h2>
+        <form action="/add_appointment" method="POST">
+            <input type="text" name="reason" placeholder="Reason for visit" required>
+            <input type="time" name="time" required>
+            <button type="submit">Request</button>
+        </form>
+    </section>
+    <section>
+        <h2>Your appointments</h2>
+        <ul>
+        {% for appointment in appointments %}
+            <li>Appointment #{{ appointment[0] }} — {{ appointment[3] }} — {{ appointment[4] }}{% if appointment[5] %} ({{ appointment[5] }}){% endif %}</li>
+        {% else %}
+            <li>No appointments yet.</li>
+        {% endfor %}
+        </ul>
+    </section>
+    <section>
+        <h2>Your invoices</h2>
+        {% for bill in bills %}
+            <p>Invoice #{{ bill[0] }} — {{ bill[2] }} — ₹{{ bill[3] }} —
+                <a href="/invoice/{{ bill[0] }}">View</a> |
+                <a href="/download_invoice/{{ bill[0] }}">Download</a>
+            </p>
+        {% else %}
+            <p>No invoices yet.</p>
+        {% endfor %}
+    </section>
+</main>
+</body>
+</html>

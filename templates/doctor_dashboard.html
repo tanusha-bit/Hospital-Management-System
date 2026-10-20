@@ -106,11 +106,41 @@
         }
 
         .logout-btn:hover { background: rgba(236, 72, 153, 0.4); }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .form-grid input,
+        .form-grid textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-main);
+        }
+
+        .form-grid button {
+            background: var(--accent-secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <a href="/doctor" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Main Portal</a>
     
+    <form action="/logout" method="POST" style="align-self:flex-end;">
+        <button type="submit" class="logout-btn">Sign out</button>
+    </form>
     <div class="header">
         <h1>Welcome, Dr. {{ doctor[1] }}</h1>
     </div>
@@ -158,7 +188,6 @@
                             <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right;">
                                 <form action="/doctor_update_status" method="POST" style="margin: 0;">
                                     <input type="hidden" name="appointment_id" value="{{ a[0] }}">
-                                    <input type="hidden" name="doc_id" value="{{ doctor[0] }}">
                                     <button type="submit" style="background: var(--accent-success); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Mark Attended</button>
                                 </form>
                             </td>
@@ -169,5 +198,61 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="dashboard-container" style="margin-top: 2rem;">
+        <div class="info-card" style="text-align: left; max-width: 900px; width: 100%;">
+            <h3 style="border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; margin-top: 0;">Create Prescription</h3>
+            <form action="/add_prescription" method="POST" class="form-grid">
+                <input type="number" name="patient_id" placeholder="Patient ID" required>
+                <input type="text" name="medicine_name" placeholder="Medicine name" required>
+                <input type="text" name="dosage" placeholder="Dosage" required>
+                <textarea name="instructions" rows="4" placeholder="Prescription instructions" required></textarea>
+                <button type="submit">Add Prescription</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-container" style="margin-top: 2rem;">
+        <div class="info-card" style="text-align: left; max-width: 900px; width: 100%;">
+            <h3 style="border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; margin-top: 0;">Recent Prescriptions</h3>
+            {% if prescriptions|length == 0 %}
+                <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No prescriptions have been added yet.</p>
+            {% else %}
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--card-border);">Patient</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--card-border);">Medicine</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--card-border);">Dosage</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--card-border);">Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in prescriptions %}
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ p[2] }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ p[3] }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ p[4] }}</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ p[5] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="dashboard-container" style="margin-top: 2rem;">
+        <div class="info-card" style="text-align: left; max-width: 900px; width: 100%;">
+            <h3 style="border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; margin-top: 0;">Generate Invoice</h3>
+            <form action="/doctor_generate_invoice" method="POST" class="form-grid">
+                <input type="number" name="patient_id" placeholder="Patient ID" required>
+                <input type="text" name="treatment" placeholder="Treatment Name" required>
+                <input type="number" name="room_charges" step="0.01" placeholder="Room Charges (₹)" required>
+                <button type="submit">Create Invoice</button>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

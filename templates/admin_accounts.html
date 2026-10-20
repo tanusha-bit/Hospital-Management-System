@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Accounts - Hospital Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { color-scheme: dark; font-family: 'Outfit', sans-serif; background: #0f172a; color: #f8fafc; }
+        body { margin: 0; padding: 2rem; }
+        main { max-width: 1000px; margin: auto; }
+        section { margin: 1.5rem 0; padding: 1.5rem; background: #1e293b; border: 1px solid #475569; border-radius: 12px; }
+        form { display: flex; gap: .75rem; flex-wrap: wrap; }
+        input, select, button { padding: .7rem; border: 1px solid #475569; border-radius: 7px; font: inherit; }
+        input, select { background: #0f172a; color: #f8fafc; }
+        button { background: #3b82f6; color: white; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: .75rem; border-bottom: 1px solid #475569; text-align: left; }
+        .error { color: #fca5a5; }
+        a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+<main>
+    <a href="/operator">Back to Admin Dashboard</a>
+    <h1>Stakeholder Accounts</h1>
+    <p>Only the Admin can provision individual logins. Share each password securely with its owner.</p>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <section>
+        <h2>Create account</h2>
+        <form action="/admin/accounts/create" method="POST">
+            <select name="role" id="stakeholder-role" required>
+                <option value="">Stakeholder type</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+                <option value="nurse">Nurse</option>
+                <option value="pharmacist">Pharmacist</option>
+            </select>
+            <select name="stakeholder_id" id="stakeholder-record" required>
+                <option value="">Select person</option>
+                {% for role, id, name in stakeholders %}
+                <option value="{{ id }}" data-role="{{ role }}">{{ name }} ({{ role|title }} #{{ id }})</option>
+                {% endfor %}
+            </select>
+            <input name="username" autocomplete="off" placeholder="Username" required>
+            <input name="password" type="password" autocomplete="new-password" minlength="12" placeholder="Password (12+ characters)" required>
+            <button type="submit">Create login</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Existing logins</h2>
+        <table>
+            <thead><tr><th>Role</th><th>Record ID</th><th>Username</th></tr></thead>
+            <tbody>
+            {% for role, stakeholder_id, username in accounts %}
+                <tr><td>{{ role|title }}</td><td>{{ stakeholder_id }}</td><td>{{ username }}</td></tr>
+            {% else %}
+                <tr><td colspan="3">No stakeholder accounts have been created.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Assign patients to nurses</h2>
+        <form action="/admin/assign_nurse" method="POST">
+            <select name="nurse_id" required>
+                <option value="">Select nurse</option>
+                {% for id, name in nurses %}<option value="{{ id }}">{{ name }} (#{{ id }})</option>{% endfor %}
+            </select>
+            <select name="patient_id" required>
+                <option value="">Select patient</option>
+                {% for id, name in patients %}<option value="{{ id }}">{{ name }} (#{{ id }})</option>{% endfor %}
+            </select>
+            <button type="submit">Assign patient</button>
+        </form>
+        <table>
+            <thead><tr><th>Nurse</th><th>Patient</th></tr></thead>
+            <tbody>
+            {% for nurse_id, nurse_name, patient_id, patient_name in nurse_assignments %}
+                <tr><td>{{ nurse_name }} (#{{ nurse_id }})</td><td>{{ patient_name }} (#{{ patient_id }})</td></tr>
+            {% else %}
+                <tr><td colspan="2">No nurse assignments yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+<script>
+    const roleSelect = document.getElementById('stakeholder-role');
+    const recordSelect = document.getElementById('stakeholder-record');
+    roleSelect.addEventListener('change', () => {
+        for (const option of recordSelect.options) {
+            option.hidden = option.value !== '' && option.dataset.role !== roleSelect.value;
+        }
+        recordSelect.value = '';
+    });
+</script>
+</body>
+</html>

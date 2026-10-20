@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255,255,255,0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+        }
+        body { margin:0; padding:2rem; font-family:'Outfit', sans-serif; background:var(--bg-color); color:var(--text-main); min-height:100vh; }
+        .header h1 { font-size:2.5rem; margin:0 0 2rem; background:linear-gradient(135deg, #bae6fd, #38bdf8); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; text-align:center; }
+        .dashboard-wrap { display:flex; gap:2rem; flex-wrap:wrap; justify-content:center; }
+        .panel { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:1.5rem; flex:1; min-width:300px; }
+        .info-card { max-width: 400px; }
+        .badge { display:inline-block; padding:0.5rem 1rem; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-weight:600; }
+        .form-grid { display:grid; gap:1rem; }
+        .form-grid input, .form-grid select, .form-grid textarea { width:100%; padding:0.8rem; border-radius:8px; border:1px solid var(--card-border); background:rgba(15,23,42,0.8); color:var(--text-main); box-sizing:border-box; }
+        button { background:var(--accent); color:#082f49; border:none; padding:0.8rem 1.2rem; border-radius:8px; font-weight:700; cursor:pointer; }
+        table { width:100%; border-collapse:collapse; margin-top:1rem; }
+        th, td { padding:0.8rem; border-bottom:1px solid rgba(255,255,255,0.08); text-align:left; }
+        .back-link { display:inline-block; margin-bottom:1rem; color:var(--text-muted); text-decoration:none; }
+    </style>
+</head>
+<body>
+    <form action="/logout" method="POST" style="text-align:right;margin-bottom:1rem;">
+        <button type="submit">Sign out</button>
+    </form>
+    <div class="header">
+        <h1>Welcome, {{ nurse[1] }}</h1>
+    </div>
+
+    <div class="dashboard-wrap">
+        <div class="panel info-card">
+            <h2>Nurse Details</h2>
+            <p><strong>ID:</strong> {{ nurse[0] }}</p>
+            <p><strong>Name:</strong> {{ nurse[1] }}</p>
+            <p><strong>Specialization:</strong> {{ nurse[2] }}</p>
+            <p><strong>Contact:</strong> {{ nurse[3] }}</p>
+            <span class="badge">Patient Care</span>
+        </div>
+
+        <div class="panel">
+            <h3>Add Care Update</h3>
+            <form action="/add_patient_care" method="POST" class="form-grid">
+                <select name="patient_id" required>
+                    <option value="">Select patient</option>
+                    {% for patient in assigned_patients %}
+                    <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+                    {% endfor %}
+                </select>
+                <select name="status">
+                    <option value="In Progress">In Progress</option>
+                    <option value="Stable">Stable</option>
+                    <option value="Needs Review">Needs Review</option>
+                </select>
+                <textarea name="care_note" rows="4" placeholder="Write care update..." required></textarea>
+                <button type="submit">Save update</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-wrap" style="margin-top:2rem;">
+        <div class="panel" style="width:100%;">
+            <h3>Assigned Patients</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in assigned_patients %}
+                    <tr>
+                        <td>{{ patient[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="dashboard-wrap" style="margin-top:2rem;">
+        <div class="panel" style="width:100%;">
+            <h3>Care Updates</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Note</th>
+                        <th>Status</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in care_updates %}
+                    <tr>
+                        <td>{{ item[2] }}</td>
+                        <td>{{ item[4] }}</td>
+                        <td>{{ item[5] }}</td>
+                        <td>{{ item[6] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

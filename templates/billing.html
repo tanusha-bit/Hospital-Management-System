@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing Portal</title>
+    <title>My Invoices</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -34,13 +34,8 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .container {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .form-section, .list-section {
+        .container { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .list-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 12px;
@@ -49,16 +44,7 @@
             min-width: 300px;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-        }
-
+        .form-group { margin-bottom: 1rem; }
         .form-group input {
             width: 100%;
             padding: 0.8rem;
@@ -77,13 +63,7 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        button.action-btn:hover {
-            opacity: 0.9;
+            width: auto;
         }
 
         .bill-card {
@@ -108,6 +88,14 @@
             font-weight: 800;
         }
 
+        .action-links a {
+            display: inline-block;
+            margin-right: 0.75rem;
+            color: var(--accent-info);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
         .back-link {
             display: inline-block;
             margin-bottom: 1rem;
@@ -117,58 +105,54 @@
     </style>
 </head>
 <body>
-    <a href="/patient" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Patient Portal</a>
-    
+    {% if session.get('role') == 'patient' %}
+    <a href="/patient_dashboard/{{ session.get('stakeholder_id') }}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Patient Dashboard</a>
+    {% else %}
+    <a href="/operator" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Admin Dashboard</a>
+    {% endif %}
+
     <div class="header">
-        <h1>Billing Management</h1>
+        <h1>{% if session.get('role') == 'patient' %}My Invoices{% else %}Hospital Invoices{% endif %}</h1>
     </div>
 
     <div class="container">
-        <div class="form-section">
-            <h3>Generate Invoice</h3>
-            <form action="/add_bill" method="POST">
-                <div class="form-group">
-                    <label>Patient ID</label>
-                    <input type="number" name="patient_id" required>
-                </div>
-                <div class="form-group">
-                    <label>Treatment Name</label>
-                    <input type="text" name="treatment" required>
-                </div>
-                <div class="form-group">
-                    <label>Room Charges (₹)</label>
-                    <input type="number" name="room_charges" step="0.01" required>
-                </div>
-                <button type="submit" class="action-btn">Generate Bill</button>
-            </form>
-        </div>
-
         <div class="list-section">
-            <h3>Recent Invoices</h3>
+            <h3>{% if session.get('role') == 'patient' %}Your Invoices{% else %}All Invoices{% endif %}</h3>
+            {% if session.get('role') != 'patient' %}
             <form action="/billing" method="POST" style="margin-bottom: 2rem;">
                 <div class="form-group" style="display:flex; gap:1rem;">
-                    <input type="number" name="patient_id" placeholder="Enter Patient ID to View Bills" required style="flex:1;">
-                    <button type="submit" class="action-btn" style="margin-top:0; width:auto;">Search</button>
+                    <input type="number" name="patient_id" placeholder="Enter your patient ID" required style="flex:1;">
+                    <button type="submit" class="action-btn">Search</button>
                 </div>
             </form>
+            {% endif %}
 
             {% if check_id %}
-            <h4 style="margin-top: -1rem;">Showing bills for Patient ID: {{ check_id }}</h4>
-            <a href="/billing" style="color:var(--text-muted); font-size:0.9rem; display: inline-block; margin-bottom: 1rem;">View All Invoices</a>
+            <h4 style="margin-top: -1rem;">Invoices for Patient ID: {{ check_id }}</h4>
+            <a href="/billing" style="color:var(--text-muted); font-size:0.9rem; display: inline-block; margin-bottom: 1rem;">Clear search</a>
             {% endif %}
-            {% for b in bills %}
-            <div class="bill-card">
-                <div class="bill-header">
-                    <strong>Bill No: #{{ b[0] }}</strong>
-                    <span>Patient ID: {{ b[1] }}</span>
+
+            {% if bills|length == 0 %}
+                <p style="color: var(--text-muted);">No invoices found for this patient.</p>
+            {% else %}
+                {% for b in bills %}
+                <div class="bill-card">
+                    <div class="bill-header">
+                        <strong>Invoice #{{ b[0] }}</strong>
+                        <span>Patient ID: {{ b[1] }}</span>
+                    </div>
+                    <div><strong>Treatment:</strong> {{ b[2] }}</div>
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <div class="bill-amount">₹{{ b[3] }}</div>
+                        <small style="color: var(--text-muted);">Room Charges</small>
+                    </div>
+                    <div class="action-links" style="margin-top: 1rem;">
+                        <a href="/invoice/{{ b[0] }}" target="_blank">View</a>
+                        <a href="/download_invoice/{{ b[0] }}">Download</a>
+                    </div>
                 </div>
-                <div><strong>Treatment:</strong> {{ b[2] }}</div>
-                <div style="text-align: right; margin-top: 1rem;">
-                    <div class="bill-amount">₹{{ b[3] }}</div>
-                    <small style="color: var(--text-muted);">Room Charges</small>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </body>

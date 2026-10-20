@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin / Operator Login - Hospital Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: 'Outfit', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+        }
+
+        main {
+            width: min(90vw, 380px);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            background: rgba(30, 41, 59, 0.85);
+            box-sizing: border-box;
+        }
+
+        h1 { margin-top: 0; }
+
+        label, input, button { display: block; width: 100%; box-sizing: border-box; }
+
+        label { margin-top: 1rem; }
+
+        input, button {
+            margin-top: 0.4rem;
+            padding: 0.8rem;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        button {
+            margin-top: 1.5rem;
+            border: 0;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+
+        .message { color: #fca5a5; }
+        a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Admin / Operator Login</h1>
+        {% if not auth_configured %}
+        <p class="message">Set HOSPITAL_SECRET_KEY, HOSPITAL_ADMIN_USERNAME, and HOSPITAL_ADMIN_PASSWORD to enable Admin login.</p>
+        {% elif error %}
+        <p class="message">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            <label for="username">Username</label>
+            <input id="username" name="username" autocomplete="username" required>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+            <button type="submit" {% if not auth_configured %}disabled{% endif %}>Sign in</button>
+        </form>
+        <p><a href="/">Back to home</a></p>
+    </main>
+</body>
+</html>

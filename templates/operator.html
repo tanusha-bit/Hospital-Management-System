@@ -28,7 +28,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         .header {
@@ -109,14 +109,54 @@
     </div>
 
     <div class="dashboard-container">
+        <a href="/patient" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-bed-pulse"></i>
+            </div>
+            <h2 class="card-title">Patient Records</h2>
+        </a>
         <a href="/appointment" class="card appointment">
             <div class="card-icon">
                 <i class="fa-solid fa-calendar-check"></i>
             </div>
             <h2 class="card-title">Manage Appointments</h2>
         </a>
+        <a href="/doctor" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <h2 class="card-title">Doctor Records</h2>
+        </a>
+        <a href="/nurse" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-briefcase-medical"></i>
+            </div>
+            <h2 class="card-title">Nurse Records</h2>
+        </a>
+        <a href="/pharmacist" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-pills"></i>
+            </div>
+            <h2 class="card-title">Pharmacist Records</h2>
+        </a>
+        <a href="/billing" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <h2 class="card-title">Billing</h2>
+        </a>
+        <a href="/admin/accounts" class="card appointment">
+            <div class="card-icon">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h2 class="card-title">Accounts & Assignments</h2>
+        </a>
     </div>
 
-    <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    <form action="/logout" method="POST">
+        <button type="submit" class="back-btn" style="background:none;border:0;cursor:pointer;font:inherit;">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+    </form>
 </body>
 </html>

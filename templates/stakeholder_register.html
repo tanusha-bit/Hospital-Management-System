@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ role }} Registration - Hospital Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { color-scheme: dark; font-family: 'Outfit', sans-serif; background: #0f172a; color: #f8fafc; }
+        body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 1rem 0; }
+        main { width: min(90vw, 420px); padding: 2rem; border: 1px solid rgba(255,255,255,.12); border-radius: 20px; background: rgba(30,41,59,.85); box-sizing: border-box; }
+        h1 { margin-top: 0; }
+        label, input, button { display: block; width: 100%; box-sizing: border-box; }
+        label { margin-top: 1rem; }
+        input, button { margin-top: .4rem; padding: .8rem; border: 1px solid #475569; border-radius: 8px; font: inherit; }
+        input { background: #0f172a; color: #f8fafc; }
+        button { margin-top: 1.5rem; border: 0; background: #3b82f6; color: white; cursor: pointer; }
+        .error { color: #fca5a5; }
+        a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Create {{ role }} Account</h1>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <form method="POST">
+            <label for="name">Full name</label>
+            <input id="name" name="name" maxlength="255" value="{{ form_data.get('name', '') }}" autocomplete="name" required>
+
+            {% if role == 'Patient' %}
+                <label for="dob">Date of birth</label>
+                <input id="dob" name="dob" type="date" value="{{ form_data.get('dob', '') }}" required>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" maxlength="255" value="{{ form_data.get('email', '') }}" autocomplete="email" required>
+            {% elif role == 'Doctor' or role == 'Nurse' %}
+                <label for="specialization">Specialization</label>
+                <input id="specialization" name="specialization" maxlength="255" value="{{ form_data.get('specialization', '') }}" required>
+                <label for="contact">Contact number</label>
+                <input id="contact" name="contact" maxlength="20" value="{{ form_data.get('contact', '') }}" autocomplete="tel" required>
+            {% else %}
+                <label for="contact">Contact number</label>
+                <input id="contact" name="contact" maxlength="20" value="{{ form_data.get('contact', '') }}" autocomplete="tel" required>
+            {% endif %}
+
+            <label for="username">Username</label>
+            <input id="username" name="username" maxlength="100" value="{{ form_data.get('username', '') }}" autocomplete="username" required>
+            <label for="password">Password (at least 12 characters)</label>
+            <input id="password" name="password" type="password" minlength="12" autocomplete="new-password" required>
+            <label for="password_confirm">Confirm password</label>
+            <input id="password_confirm" name="password_confirm" type="password" minlength="12" autocomplete="new-password" required>
+            <button type="submit">Register</button>
+        </form>
+        <p><a href="/login/{{ role|lower }}">Back to {{ role|lower }} login</a></p>
+    </main>
+</body>
+</html>
